@@ -9,7 +9,7 @@ math:
 license:
 hidden: false
 comments: true
-draft: true
+draft: false
 ---
 
 Function Calling が説明等を読んでもイマイチよくわからなかったので実際に試してみた。これはその時のメモ。

@@ -9,7 +9,7 @@ math:
 license:
 hidden: false
 comments: true
-draft: true
+draft: false
 ---
 
 2024/06/30 に v1.0.0 がリリースされたので、以後は README の手順で OK。

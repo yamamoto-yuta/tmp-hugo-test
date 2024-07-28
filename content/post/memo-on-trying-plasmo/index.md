@@ -9,7 +9,7 @@ math:
 license:
 hidden: false
 comments: true
-draft: true
+draft: false
 ---
 
 前から気になっていたブラウザ拡張機能の開発フレームワーク「Plasmo」を触ってみたので、その時のメモ。

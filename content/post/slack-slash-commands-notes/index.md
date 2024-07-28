@@ -9,7 +9,7 @@ math:
 license:
 hidden: false
 comments: true
-draft: true
+draft: false
 ---
 
 Slack の Slash Commands を作成した際に色々つまづいたのでメモに残す。

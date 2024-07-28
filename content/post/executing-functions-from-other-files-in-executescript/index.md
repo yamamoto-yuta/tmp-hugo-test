@@ -9,7 +9,7 @@ math:
 license:
 hidden: false
 comments: true
-draft: true
+draft: false
 ---
 
 先日、ブラウザ拡張機能「 [CSV2MD Shortcut](https://chrome.google.com/webstore/detail/csv2md-shortcut/fakcffdpcdlhgphdbcanlningmnoigoe?hl=ja) 」の [v0.2.0 をリリースした](https://github.com/yamamoto-yuta/csv2md-shortcut/releases/tag/v0.2.0) 。このバージョンでは新機能として Popup からテキスト変換を行えるようにした。
