@@ -1,7 +1,7 @@
 baseurl: https://yamamoto-yuta.github.io/tmp-hugo-test/
 languageCode: ja
 theme: hugo-theme-stack
-paginate: 3
+paginate: 10
 title: YAMAMOTO Yuta
 copyright: YAMAMOTO Yuta
 
