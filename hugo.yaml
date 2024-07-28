@@ -1,4 +1,4 @@
-baseurl: https://yamamoto-yuta.github.io
+baseurl: https://yamamoto-yuta.github.io/tmp-hugo-test/
 languageCode: ja
 theme: hugo-theme-stack
 paginate: 3
