@@ -13,4 +13,4 @@ server-prod:
 
 .PHONY: build
 build:
-	docker compose run --rm site hugo
+	docker compose run --rm site hugo --minify
