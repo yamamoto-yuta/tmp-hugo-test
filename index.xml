@@ -1,4 +1,1442 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>YAMAMOTO Yuta</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/</link><description>Recent content on YAMAMOTO Yuta</description><generator>Hugo -- gohugo.io</generator><language>ja</language><copyright>YAMAMOTO Yuta</copyright><lastBuildDate>Sat, 25 Nov 2023 17:45:00 +0000</lastBuildDate><atom:link href="https://yamamoto-yuta.github.io/tmp-hugo-test/index.xml" rel="self" type="application/rss+xml"/><item><title>Archives</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/archives/</link><pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate><guid>https://yamamoto-yuta.github.io/tmp-hugo-test/archives/</guid><description/></item><item><title>About</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://yamamoto-yuta.github.io/tmp-hugo-test/about/</guid><description>&lt;h2 id="careereducation">Career/Education
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>YAMAMOTO Yuta</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/</link><description>Recent content on YAMAMOTO Yuta</description><generator>Hugo -- gohugo.io</generator><language>ja</language><copyright>YAMAMOTO Yuta</copyright><lastBuildDate>Sat, 25 Nov 2023 17:45:00 +0000</lastBuildDate><atom:link href="https://yamamoto-yuta.github.io/tmp-hugo-test/index.xml" rel="self" type="application/rss+xml"/><item><title>Slack の Slash Commands 作成メモ</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/p/slack-slash-commands-notes/</link><pubDate>Sat, 25 Nov 2023 17:45:00 +0000</pubDate><guid>https://yamamoto-yuta.github.io/tmp-hugo-test/p/slack-slash-commands-notes/</guid><description>&lt;p>Slack の Slash Commands を作成した際に色々つまづいたのでメモに残す。&lt;/p>
+&lt;h2 id="今回のゴール">今回のゴール
+&lt;/h2>&lt;ul>
+&lt;li>&lt;code>/echo&lt;/code> で &lt;code>echo&lt;/code> と返すスラッシュコマンドを作成する&lt;/li>
+&lt;li>&lt;code>/hoge&lt;/code> で &lt;code>hoge&lt;/code> と返すスラッシュコマンドを作成する&lt;/li>
+&lt;/ul>
+&lt;h2 id="ngrok-のセットアップ">ngrok のセットアップ
+&lt;/h2>&lt;p>ダウンロードページの URL :
+&lt;a class="link" href="https://ngrok.com/download" target="_blank" rel="noopener"
+>https://ngrok.com/download&lt;/a>&lt;/p>
+&lt;p>アカウントを作成せずに利用していたが、次のエラーが出たのでアカウントを作成した:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">ERR_NGROK_6022
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Before you can serve HTML content, you must sign up for an ngrok account and install your authtoken.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">https://ngrok.com/docs/errors/err_ngrok_6022/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>次のコマンドで ngrok を起動させる（今回は 3000 番ポートを使うことにする）:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ ngrok http 3000
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="各種ファイルの作成">各種ファイルの作成
+&lt;/h2>&lt;p>&lt;code>.env.sample&lt;/code> :&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">WORKING_DIR=/usr/src/app
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">OPENAI_API_KEY=# Your OpenAI API key
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">SLACK_BOT_TOKEN=# OAuth &amp;amp; Permissions &amp;gt; OAuth Tokens for Your Workspace &amp;gt; Bot User OAuth Access Token
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">SLACK_SIGNING_SECRET=# Basic Information &amp;gt; App Credentials &amp;gt; Signing Secret
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>Dockerfile&lt;/code> :&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">FROM python:3.10
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">COPY requirements.txt ${WORKING_DIR}/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">RUN apt-get update &amp;amp;&amp;amp; apt-get upgrade -y
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">RUN pip install --upgrade pip &amp;amp;&amp;amp; \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> pip install -r requirements.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>docker-compose.yml&lt;/code> :&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yml" data-lang="yml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">version&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;3.7&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">services&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">app&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">build&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">.&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">env_file&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="l">.env&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">volumes&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="l">.:$WORKING_DIR&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">working_dir&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">$WORKING_DIR&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">tty&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">ports&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="m">3000&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="m">3000&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>requirements.txt&lt;/code> :&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-txt" data-lang="txt">&lt;span class="line">&lt;span class="cl">slack_bolt==1.18.1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>main.py&lt;/code> :&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">os&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">slack_bolt&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">App&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">app&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">App&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">signing_secret&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">environ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;SLACK_SIGNING_SECRET&amp;#34;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">token&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">environ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;SLACK_BOT_TOKEN&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nd">@app.command&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;/echo&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">echo&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ack&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">respond&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ack&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">respond&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;echo&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nd">@app.command&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;/hoge&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">hoge&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ack&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">respond&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ack&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">respond&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;hoge&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="vm">__name__&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s2">&amp;#34;__main__&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">app&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">start&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">port&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">3000&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>実行コマンドは次のとおり:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ docker-compose build
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ docker-compose up -d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ docker exec -it &amp;lt;CONTAINER_ID&amp;gt; bash
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">[IN CONTAINER]# python main.py
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="slack-app-設定">Slack App 設定
+&lt;/h2>&lt;h3 id="app-作成">App 作成
+&lt;/h3>&lt;p>まずは普通に Slack App を作成。 App Display Name 、 Default username がデフォルトだと空欄になっており、これらを設定しないとワークスペースへインストールできないので、忘れず設定すること。&lt;/p>
+&lt;p>参考:&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://the-simple.jp/slack-nobotuser" target="_blank" rel="noopener"
+>【Slack】インストールするボットユーザーがありませんと出たときの対処方法 | THE SIMPLE&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h3 id="slash-commands">Slash Commands
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yml" data-lang="yml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">slash_commands&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">command&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/echo&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">url&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">https://xxxxxxxxxx.ngrok-free.app/slack/events&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">description&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">echo&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">should_escape&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">false&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">command&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/hoge&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">url&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">https://xxxxxxxxxx.ngrok-free.app/slack/events&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">description&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">hoge&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">should_escape&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">false&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>⚠️ &lt;code>url&lt;/code> のエンドポイントは &lt;code>/echo&lt;/code> や &lt;code>/hoge&lt;/code> ではなく一律 &lt;code>/slack/events&lt;/code> （ここで無駄に時間を溶かしてしまった…）&lt;/p>
+&lt;p>参考: &lt;a class="link" href="https://slack.dev/bolt-python/ja-jp/concepts#basic:~:text=%E3%82%A2%E3%83%97%E3%83%AA%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%81%A7%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E7%99%BB%E9%8C%B2%E3%81%99%E3%82%8B%E3%81%A8%E3%81%8D%E3%81%AF%E3%80%81%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%20URL%20%E3%81%AE%E6%9C%AB%E5%B0%BE%E3%81%AB%20/slack/events%20%E3%82%92%E3%81%A4%E3%81%91%E3%81%BE%E3%81%99%E3%80%82" target="_blank" rel="noopener"
+>コマンドのリスニングと応答 - Slack | Bolt for Python&lt;/a>&lt;/p>
+&lt;h3 id="oauth--permissions">OAuth &amp;amp; Permissions
+&lt;/h3>&lt;p>&lt;img src="https://github.com/yamamoto-yuta/article-summarize-bot/assets/55144709/99b922b3-405a-477c-bfea-a2ebf1480ebc"
+loading="lazy"
+alt="image"
+>&lt;/p>
+&lt;h2 id="実際に動かしてみる">実際に動かしてみる
+&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>入力&lt;/th>
+&lt;th>実行結果&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;img src="https://github.com/yamamoto-yuta/article-summarize-bot/assets/55144709/83a521fd-f0c4-4811-bb05-f9691bda87c2"
+loading="lazy"
+alt="image"
+>&lt;/td>
+&lt;td>&lt;img src="https://github.com/yamamoto-yuta/article-summarize-bot/assets/55144709/604b0883-79a4-4de9-a2bc-bef60f723b95"
+loading="lazy"
+alt="image"
+>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;img src="https://github.com/yamamoto-yuta/article-summarize-bot/assets/55144709/64f3c44a-574e-4bf6-89d0-77f6279b1c16"
+loading="lazy"
+alt="image"
+>&lt;/td>
+&lt;td>&lt;img src="https://github.com/yamamoto-yuta/article-summarize-bot/assets/55144709/cf2f8f26-81c3-458f-8296-e16f220789ce"
+loading="lazy"
+alt="image"
+>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>Function Calling 触ってみたメモ</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/p/function-calling-memo/</link><pubDate>Sat, 25 Nov 2023 11:54:00 +0000</pubDate><guid>https://yamamoto-yuta.github.io/tmp-hugo-test/p/function-calling-memo/</guid><description>&lt;p>Function Calling が説明等を読んでもイマイチよくわからなかったので実際に試してみた。これはその時のメモ。&lt;/p>
+&lt;p>今回は次の公式ドキュメントの手順をやってみた。&lt;/p>
+&lt;p>&lt;a class="link" href="https://platform.openai.com/docs/guides/function-calling" target="_blank" rel="noopener"
+>https://platform.openai.com/docs/guides/function-calling&lt;/a>&lt;/p>
+&lt;p>また、次の日本語解説記事が参考になった。&lt;/p>
+&lt;p>&lt;a class="link" href="https://dev.classmethod.jp/articles/understand-openai-function-calling/" target="_blank" rel="noopener"
+>https://dev.classmethod.jp/articles/understand-openai-function-calling/&lt;/a>&lt;/p>
+&lt;h2 id="セットアップ">セットアップ
+&lt;/h2>&lt;p>今回、実行環境は Google Colab にした。&lt;/p>
+&lt;p>まずは OpenAI ライブラリをインストール。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">!pip install openai
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>続いて、各種ライブラリのインポートと OpenAI クライアントを作成。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">json&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">openai&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">OpenAI&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">client&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">OpenAI&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">api_key&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">OPENAI_API_KEY&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>OpenAI API Key は次のページで作成できる:&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://platform.openai.com/api-keys" target="_blank" rel="noopener"
+>API keys - OpenAI API&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>今回、 Function Calling の動作確認用に次のダミー関数を利用した。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Example dummy function hard coded to return the same weather&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># In production, this could be your backend API or an external API&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">get_current_weather&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">location&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">unit&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;fahrenheit&amp;#34;&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;Get the current weather in a given location&amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="s2">&amp;#34;tokyo&amp;#34;&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">location&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">lower&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">json&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">dumps&lt;/span>&lt;span class="p">({&lt;/span>&lt;span class="s2">&amp;#34;location&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Tokyo&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;temperature&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;10&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;unit&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;celsius&amp;#34;&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">elif&lt;/span> &lt;span class="s2">&amp;#34;san francisco&amp;#34;&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">location&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">lower&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">json&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">dumps&lt;/span>&lt;span class="p">({&lt;/span>&lt;span class="s2">&amp;#34;location&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;San Francisco&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;temperature&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;72&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;unit&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;fahrenheit&amp;#34;&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">elif&lt;/span> &lt;span class="s2">&amp;#34;paris&amp;#34;&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">location&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">lower&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">json&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">dumps&lt;/span>&lt;span class="p">({&lt;/span>&lt;span class="s2">&amp;#34;location&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Paris&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;temperature&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;22&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;unit&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;celsius&amp;#34;&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">json&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">dumps&lt;/span>&lt;span class="p">({&lt;/span>&lt;span class="s2">&amp;#34;location&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">location&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;temperature&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;unknown&amp;#34;&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="全体像">全体像
+&lt;/h2>&lt;p>公式ドキュメントのコードの全体像は次のとおり:&lt;/p>
+&lt;ol>
+&lt;li>（AI が）質問に必要な関数を選び、引数を作成する&lt;/li>
+&lt;li>（プログラムが）関数を実行&lt;/li>
+&lt;li>（AI が）関数結果も入力に入れて質問に回答する&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>引用: &lt;a class="link" href="https://dev.classmethod.jp/articles/understand-openai-function-calling/#:~:text=%E5%87%A6%E7%90%86%E3%81%A8%E3%81%AF-,%EF%BC%88AI%E3%81%8C%EF%BC%89%E8%B3%AA%E5%95%8F%E3%81%AB%E5%BF%85%E8%A6%81%E3%81%AA%E9%96%A2%E6%95%B0%E3%82%92%E9%81%B8%E3%81%B3%E3%80%81%E5%BC%95%E6%95%B0%E3%82%92,%E9%96%A2%E6%95%B0%E7%B5%90%E6%9E%9C%E3%82%82%E5%85%A5%E5%8A%9B%E3%81%AB%E5%85%A5%E3%82%8C%E3%81%A6%E8%B3%AA%E5%95%8F%E3%81%AB%E5%9B%9E%E7%AD%94%E3%81%99%E3%82%8B,-%E3%81%A7%E3%81%99%E3%80%82%20AI%E3%81%AE" target="_blank" rel="noopener"
+>[OpenAI] Function calling で遊んでみたら本質が見えてきたのでまとめてみた | DevelopersIO&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="step-1-会話と利用可能な関数をモデルに送る">STEP 1 ｜会話と利用可能な関数をモデルに送る
+&lt;/h2>&lt;p>公式ドキュメントのコード（日本語のコメントは自分で追記した）:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Step 1: send the conversation and available functions to the model&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 会話&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">messages&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[{&lt;/span>&lt;span class="s2">&amp;#34;role&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;user&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;content&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;What&amp;#39;s the weather like in San Francisco, Tokyo, and Paris?&amp;#34;&lt;/span>&lt;span class="p">}]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 利用可能な関数&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">tools&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;function&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;function&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;get_current_weather&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;description&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Get the current weather in a given location&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;parameters&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;object&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;properties&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;location&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;string&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;description&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;The city and state, e.g. San Francisco, CA&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;unit&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;string&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;enum&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;celsius&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;fahrenheit&amp;#34;&lt;/span>&lt;span class="p">]},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;required&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;location&amp;#34;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># モデルへ投げて回答を取得&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">response&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">client&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">chat&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">completions&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">create&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">model&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;gpt-3.5-turbo-1106&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">messages&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">messages&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tools&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">tools&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tool_choice&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;auto&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="c1"># auto is default, but we&amp;#39;ll be explicit&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>response&lt;/code> の中身はこんな感じ。今回はサンフランシスコ、東京、パリの 3 つの都市の天気を訊いているので、 &lt;code>tool_calls&lt;/code> が 3 リクエスト分になっている。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;id&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;chatcmpl-xxxxxxxxxx&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;choices&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Choice&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">finish_reason&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;tool_calls&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">index&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">message&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">ChatCompletionMessage&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">content&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">None&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">role&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;assistant&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function_call&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">None&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tool_calls&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatCompletionMessageToolCall&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;call_aaaaaaaaaa&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Function&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">arguments&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;San Francisco&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;function&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatCompletionMessageToolCall&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;call_bbbbbbbbbb&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Function&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">arguments&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;Tokyo&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;function&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatCompletionMessageToolCall&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;call_cccccccccc&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Function&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">arguments&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;Paris&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;function&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;created&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1700895213&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;model&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;gpt-3.5-turbo-1106&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;object&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;chat.completion&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;system_fingerprint&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;fp_xxxxxxxxxx&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;usage&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">CompletionUsage&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">completion_tokens&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">77&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">prompt_tokens&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">88&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">total_tokens&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">165&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>この中から次の 2 つを取り出す。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">response_message&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">response&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">choices&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">message&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">tool_calls&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">response_message&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tool_calls&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>次の処理に入る前に、 Function Calling が要求されているかのチェックが必要。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Step 2: check if the model wanted to call a function&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="n">tool_calls&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="step-2-実際に関数を実行する">STEP 2 ｜実際に関数を実行する
+&lt;/h2>&lt;p>公式ドキュメント:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Step 3: call the function&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Note: the JSON response may not always be valid; be sure to handle errors&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">available_functions&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;get_current_weather&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">get_current_weather&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span> &lt;span class="c1"># only one function in this example, but you can have multiple&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">messages&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">append&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">response_message&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1"># extend conversation with assistant&amp;#39;s reply&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Step 4: send the info for each function call and function response to the model&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">tool_call&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">tool_calls&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function_name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tool_call&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">name&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function_to_call&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">available_functions&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">function_name&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function_args&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">json&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">loads&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tool_call&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">arguments&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function_response&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">function_to_call&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">location&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">function_args&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;location&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">unit&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">function_args&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;unit&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">messages&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">append&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;tool_call_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">tool_call&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;role&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;tool&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function_name&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;content&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function_response&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span> &lt;span class="c1"># extend conversation with function response&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>分解して見ていく。&lt;/p>
+&lt;p>利用可能な関数の辞書を作成している。今回は &lt;code>get_current_weather()&lt;/code> しか利用できないので、辞書内のアイテムは 1 つだけになる。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">available_functions&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;get_current_weather&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">get_current_weather&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span> &lt;span class="c1"># only one function in this example, but you can have multiple&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>available_functions&lt;/code> の中身は次のようになっている。関数がオブジェクトとして辞書に登録されている。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">function&lt;/span> &lt;span class="n">__main__&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get_current_weather&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">location&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">unit&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;fahrenheit&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>STEP 1 で得た &lt;code>response_message&lt;/code> を &lt;code>message&lt;/code> に &lt;code>append&lt;/code> している。これは STEP 3 で最終的な回答を作成するために使用する。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">messages&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">append&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">response_message&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1"># extend conversation with assistant&amp;#39;s reply&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>したがって、 &lt;code>messages&lt;/code> の中身は次のようになる。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;role&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;user&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;content&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;What&amp;#39;s the weather like in San Francisco, Tokyo, and Paris?&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatCompletionMessage&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">content&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">None&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">role&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;assistant&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function_call&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">None&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tool_calls&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatCompletionMessageToolCall&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;call_aaaaaaaaaa&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Function&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">arguments&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;San Francisco&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;function&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatCompletionMessageToolCall&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;call_bbbbbbbbbb&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Function&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">arguments&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;Tokyo&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;function&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatCompletionMessageToolCall&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;call_cccccccccc&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Function&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">arguments&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;Paris&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;function&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>STEP 1 で作成したリクエストをループで順次、実際に関数へリクエストしていく。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Step 4: send the info for each function call and function response to the model&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">tool_call&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">tool_calls&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>実際に関数を実行する部分は次のコード。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 呼び出す関数を取得&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">function_name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tool_call&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">name&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">function_to_call&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">available_functions&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">function_name&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 関数に渡す引数を取得（引数は JSON 文字列で格納されているので json.loads() ）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">function_args&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">json&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">loads&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tool_call&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">arguments&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 実際に関数を実行する&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">function_response&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">function_to_call&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">location&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">function_args&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;location&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">unit&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">function_args&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;unit&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>関数の実行結果を &lt;code>messages&lt;/code> へ &lt;code>append&lt;/code> している。これは STEP 3 で最終的な回答を作成するためである。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">messages&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">append&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;tool_call_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">tool_call&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;role&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;tool&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function_name&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;content&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">function_response&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span> &lt;span class="c1"># extend conversation with function response&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>ループ終了時の &lt;code>messages&lt;/code> の中身は次のようになっている。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="p">[{&lt;/span>&lt;span class="s1">&amp;#39;role&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;user&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;content&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;What&amp;#39;s the weather like in San Francisco, Tokyo, and Paris?&amp;#34;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatCompletionMessage&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">content&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">None&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">role&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;assistant&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">function_call&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">None&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tool_calls&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">ChatCompletionMessageToolCall&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;call_aaaaaaaaaa&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">function&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Function&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">arguments&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;San Francisco&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nb">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;function&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">ChatCompletionMessageToolCall&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;call_bbbbbbbbbb&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">function&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Function&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">arguments&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;Tokyo&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nb">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;function&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">ChatCompletionMessageToolCall&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;call_cccccccccc&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">function&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Function&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">arguments&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;Paris&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="nb">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;function&amp;#39;&lt;/span>&lt;span class="p">)]),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s1">&amp;#39;tool_call_id&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;call_aaaaaaaaaa&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;role&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;tool&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;name&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;content&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;San Francisco&amp;#34;, &amp;#34;temperature&amp;#34;: &amp;#34;72&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;fahrenheit&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s1">&amp;#39;tool_call_id&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;call_bbbbbbbbbb&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;role&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;tool&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;name&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;content&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;Tokyo&amp;#34;, &amp;#34;temperature&amp;#34;: &amp;#34;10&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s1">&amp;#39;tool_call_id&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;call_cccccccccc&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;role&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;tool&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;name&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;content&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;Paris&amp;#34;, &amp;#34;temperature&amp;#34;: &amp;#34;22&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">}]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="step-3-最終的な回答を作成する">STEP 3 ｜最終的な回答を作成する
+&lt;/h2>&lt;p>公式ドキュメントのコード:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">second_response&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">client&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">chat&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">completions&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">create&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">model&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;gpt-3.5-turbo-1106&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">messages&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">messages&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span> &lt;span class="c1"># get a new response from the model where it can see the function response&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>second_response の中身:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;id&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;chatcmpl-yyyyyyyyyy&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;choices&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Choice&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">finish_reason&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;stop&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">index&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">message&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">ChatCompletionMessage&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">content&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;Currently, the weather in San Francisco is 72°F, in Tokyo it is 10°C, and in Paris it is 22°C.&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">role&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;assistant&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function_call&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">None&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tool_calls&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">None&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;created&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1700895214&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;model&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;gpt-3.5-turbo-1106&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;object&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;chat.completion&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;system_fingerprint&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;fp_eeff13170a&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;usage&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">CompletionUsage&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">completion_tokens&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">29&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">prompt_tokens&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">169&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">total_tokens&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">198&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>second_response.choices[0].message.content&lt;/code> を見てみると、関数の実行結果が回答に組み込まれていることがわかる。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="s1">&amp;#39;Currently, the weather in San Francisco is 72°F, in Tokyo it is 10°C, and in Paris it is 22°C.&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="何が嬉しいのか">何が嬉しいのか？
+&lt;/h2>&lt;p>（ほぼほぼ「 &lt;a class="link" href="https://dev.classmethod.jp/articles/understand-openai-function-calling/" target="_blank" rel="noopener"
+>[OpenAI] Function calling で遊んでみたら本質が見えてきたのでまとめてみた | DevelopersIO&lt;/a> 」に書かれていることではあるが…）&lt;/p>
+&lt;p>例えば、今回のように自然言語で各都市の気温を問い合わせる仕組みを作る場合、 ChatGPT だけでは各都市の気温は答えられないので API 等で別途情報を取得してくる必要がある（補足）。そのため、問い合わせ文から API 等へのリクエストに必要な情報を抽出する必要があった。&lt;/p>
+&lt;p>「 What&amp;rsquo;s the weather like in San Francisco, Tokyo, and Paris? 」という質問の場合、（どのような情報がリクエストに必要かによるが）「 San Francisco 」「 Tokyo 」「 Paris 」の 3 つの情報を抽出する必要がある。&lt;/p>
+&lt;p>Function Calling が登場するまでは、プロンプトを工夫することで情報を抽出しやすくしていた。&lt;/p>
+&lt;p>例えば次のプロンプトを用いたとする。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">次の問い合わせ文から都市を抽出してください。出力フォーマットは次のようにしてください:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## 出力フォーマット
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- 都市1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- 都市2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## 問い合わせ文
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">What&amp;#39;s the weather like in San Francisco, Tokyo, and Paris?
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>すると、 ChatGPT は次のように回答してくれる。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">## 出力フォーマット
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- San Francisco
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- Tokyo
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">- Paris
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>今回の気温の例は出力フォーマットがシンプルだったので比較的指定したフォーマットで回答してくれているが、複雑な出力フォーマットだったりすると指定したフォーマットにしたがってくれなかったりする。&lt;/p>
+&lt;p>Function Calling を使えば、引数の仕様を指定すればそれに合うように情報を抽出してくれる。例えば今回の場合、次のように情報を抽出してくれていた。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatCompletionMessageToolCall&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;call_aaaaaaaaaa&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Function&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">arguments&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;San Francisco&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;function&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatCompletionMessageToolCall&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;call_bbbbbbbbbb&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Function&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">arguments&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;Tokyo&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;function&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ChatCompletionMessageToolCall&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;call_cccccccccc&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">function&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Function&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">arguments&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;{&amp;#34;location&amp;#34;: &amp;#34;Paris&amp;#34;, &amp;#34;unit&amp;#34;: &amp;#34;celsius&amp;#34;}&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;get_current_weather&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;function&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="補足-今は-browse-with-bing-のおかげで-chatgpt-単体での回答が可能になっている">補足: 今は Browse with Bing のおかげで ChatGPT 単体での回答が可能になっている
+&lt;/h2>&lt;p>現在では ChatGPT に「 Browse with Bing 」機能が搭載されているため、 LLM 単体でも回答が可能となっている。&lt;/p>
+&lt;p>例えば、今回の「 What&amp;rsquo;s the weather like in San Francisco, Tokyo, and Paris? 」という質問を ChatGPT (ChatGPT Plus 加入版) に投げてみたところ、次の回答が得られた:&lt;/p>
+&lt;blockquote>
+&lt;p>現在の天気について、以下の都市の情報は次の通りです：&lt;/p>
+&lt;p>サンフランシスコ（カリフォルニア州、アメリカ）：気温は 57°F（約 14°C）で、部分的に雲があります。今後の予報では最高気温が 66°F（約 19°C）、最低気温が 49°F（約 9°C）となる見込みです。風速は北東から 5mph（約 8km/h）です&lt;a class="link" href="https://www.timeanddate.com/weather/usa/san-francisco#:~:text=Weather%20Today%20Weather%20Hourly%2014,hour%20forecast%20for%20next%20week" target="_blank" rel="noopener"
+>[”]&lt;/a>。&lt;/p>
+&lt;p>東京（日本）：気温は 60°F（約 16°C）で、涼しいです。今後の予報では最高気温が 76°F（約 24°C）、最低気温が 48°F（約 9°C）となる見込みです。風速は南から 9mph（約 14km/h）です&lt;a class="link" href="https://www.timeanddate.com/weather/japan/tokyo#:~:text=Weather%20Today%20Weather%20Hourly%2014,for%20the%20next%202%20weeks" target="_blank" rel="noopener"
+>[”]&lt;/a>。&lt;/p>
+&lt;p>パリ（フランス）：気温は 41°F（約 5°C）で、一部に雲があります。体感温度は 39°F（約 4°C）です。今後の予報では最高気温が 56°F（約 13°C）、最低気温が 40°F（約 4°C）となる見込みです。風速は北西から 3mph（約 5km/h）です&lt;a class="link" href="https://www.timeanddate.com/weather/france/paris#:~:text=Weather%20Today%20Weather%20Hourly%2014,hour%20forecast%20for%20next%20week" target="_blank" rel="noopener"
+>[”]&lt;/a>。&lt;/p>
+&lt;p>これらの情報は、各都市の現在の気象条件を反映しています。天候は変わりやすいので、最新の情報を得るためには、定期的に天気予報を確認することをお勧めします。&lt;/p>
+&lt;/blockquote></description></item><item><title>executeScript() で呼ぶ関数の中で別ファイルの関数を呼び出したい</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/p/executing-functions-from-other-files-in-executescript/</link><pubDate>Sat, 05 Aug 2023 15:57:00 +0000</pubDate><guid>https://yamamoto-yuta.github.io/tmp-hugo-test/p/executing-functions-from-other-files-in-executescript/</guid><description>&lt;p>先日、ブラウザ拡張機能「 &lt;a class="link" href="https://chrome.google.com/webstore/detail/csv2md-shortcut/fakcffdpcdlhgphdbcanlningmnoigoe?hl=ja" target="_blank" rel="noopener"
+>CSV2MD Shortcut&lt;/a> 」の &lt;a class="link" href="https://github.com/yamamoto-yuta/csv2md-shortcut/releases/tag/v0.2.0" target="_blank" rel="noopener"
+>v0.2.0 をリリースした&lt;/a> 。このバージョンでは新機能として Popup からテキスト変換を行えるようにした。
+&lt;br />
+v0.1.0 では BSW にテキスト変換処理を実装していた。 Popup からテキスト変換を行えるようにするにあたってその処理を BSW から切り出そうとした。が、うまくいかなかった…。
+&lt;br />
+この記事では、そのときの試行錯誤をログとして残す。
+&lt;br />&lt;/p>
+&lt;hr>
+&lt;br />
+&lt;p>該当 issue:&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/yamamoto-yuta/csv2md-shortcut/issues/35" target="_blank" rel="noopener"
+>https://github.com/yamamoto-yuta/csv2md-shortcut/issues/35&lt;/a>&lt;/p>
+&lt;p>検証用リポジトリ:&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/yamamoto-yuta/chrome-extension-injected-code-debug" target="_blank" rel="noopener"
+>https://github.com/yamamoto-yuta/chrome-extension-injected-code-debug&lt;/a>&lt;/p>
+&lt;p>公式ドキュメントの記載:&lt;/p>
+&lt;blockquote>
+&lt;p>For the &lt;code>func&lt;/code> key, you can pass in a TS function from your project. It will be transpiled into JS when your extension bundles. You may also use the &lt;code>files&lt;/code> key to inject a file from the root of the built bundle.&lt;/p>
+&lt;/blockquote>
+&lt;p>これを読む限り、ビルド済みファイルに手を加えるしか無さそう…？（であれば、それは管理面倒くさくなりそうなのでやらない方が良さそう…）&lt;/p></description></item><item><title>Rust 版 ls-Improved 導入メモ</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/p/rust-ls-improved-installation-notes/</link><pubDate>Sun, 23 Jul 2023 14:50:00 +0000</pubDate><guid>https://yamamoto-yuta.github.io/tmp-hugo-test/p/rust-ls-improved-installation-notes/</guid><description>&lt;p>2024/06/30 に v1.0.0 がリリースされたので、以後は README の手順で OK。&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://github.com/ShotaroKataoka/ls-Improved" target="_blank" rel="noopener"
+>https://github.com/ShotaroKataoka/ls-Improved&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;details>&lt;summary>2024/06/29以前の方法&lt;/summary>
+&lt;h2 id="コードはここ">コードはここ
+&lt;/h2>&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://github.com/ShotaroKataoka/ls-Improved/tree/develop-rust-rewrite" target="_blank" rel="noopener"
+>https://github.com/ShotaroKataoka/ls-Improved/tree/develop-rust-rewrite&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="manual">Manual
+&lt;/h2>&lt;ol>
+&lt;li>公式 GitHub の &lt;a class="link" href="https://github.com/ShotaroKataoka/ls-Improved/releases" target="_blank" rel="noopener"
+>Releases&lt;/a> ページからダウンロード&lt;/li>
+&lt;li>ダウンロードファイルを解凍して、lsi を使いたいディレクトリへ移動&lt;/li>
+&lt;li>&lt;code>path/to/lsi-**&lt;/code> で動く&lt;/li>
+&lt;/ol>
+&lt;p>毎回 &lt;code>path/to/lsi-**&lt;/code> と打つのは面倒くさいので alias を登録しておくと良い。&lt;/p>
+&lt;/details>
+&lt;h2 id="apt">apt
+&lt;/h2>&lt;h3 id="手順">手順
+&lt;/h3>&lt;p>PPA リポジトリ:&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://github.com/ShotaroKataoka/ppa" target="_blank" rel="noopener"
+>https://github.com/ShotaroKataoka/ppa&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>GPG 鍵をダウンロード&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">curl -s --compressed &amp;#34;https://ShotaroKataoka.github.io/ppa/ubuntu/KEY.gpg&amp;#34; | gpg --dearmor | tee /etc/apt/trusted.gpg.d/ls_improved_ppa.gpg
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="2">
+&lt;li>PPA を追加&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">echo &amp;#34;deb [signed-by=/etc/apt/trusted.gpg.d/ls_improved_ppa.gpg] https://ShotaroKataoka.github.io/ppa/ubuntu ./&amp;#34; | tee /etc/apt/sources.list.d/ls_Improved.list
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="3">
+&lt;li>インストール&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">apt-get update &amp;amp;&amp;amp; apt-get install ls-improved
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="検証用環境">検証用環境
+&lt;/h3>&lt;p>Dockerfile:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">FROM ubuntu:20.04
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">RUN apt-get update &amp;amp;&amp;amp; apt-get upgrade -y &amp;amp;&amp;amp; apt-get install -y \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> curl \
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> gpg
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>docker-compose.yml&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yml" data-lang="yml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">version&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;3.8&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">services&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">ubuntu&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">build&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">.&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">ubuntu-apt-install-sandbox&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">container_name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">ubuntu&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">tty&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="参考記事">参考記事
+&lt;/h3>&lt;ul>
+&lt;li>&lt;a class="link" href="https://note.com/ryonakano/n/na5bada77dff7" target="_blank" rel="noopener"
+>.deb ファイルをカスタマイズして、GitHub で PPA をホストして、Debian にインストールする方法（その 4: ホスティングした PPA から、パッケージを Debian にインストールする）｜ Ryo Nakano&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://cloud.google.com/sdk/docs/install?hl=ja" target="_blank" rel="noopener"
+>gcloud CLI をインストールする  |  Google Cloud&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>Plasmo 触ってみたメモ</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/p/memo-on-trying-plasmo/</link><pubDate>Sun, 04 Jun 2023 12:54:00 +0000</pubDate><guid>https://yamamoto-yuta.github.io/tmp-hugo-test/p/memo-on-trying-plasmo/</guid><description>&lt;p>前から気になっていたブラウザ拡張機能の開発フレームワーク「Plasmo」を触ってみたので、その時のメモ。&lt;/p>
+&lt;p>基本的に下記の記事をなぞる形で触っていった。&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://zenn.dev/nado1001/articles/plasmo-browser-extension" target="_blank" rel="noopener"
+>ブラウザ拡張機能を作るための React フレームワーク『Plasmo』&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>なので、ここでは上記記事をなぞった際につまづいた箇所や個人的な所感などについて記す。&lt;/p>
+&lt;h2 id="環境構築を-docker-でやってみた">環境構築を Docker でやってみた
+&lt;/h2>&lt;p>ローカル環境がごちゃごちゃするのが個人的に嫌だったので、 Docker で環境構築してみた。&lt;/p>
+&lt;p>上記記事や公式ドキュメントには特に Docker についての言及は無かったが、 Node.js があれば十分だったので適当な Node.js のイメージを持ってこればいけるはず。&lt;/p>
+&lt;p>ちなみに、 Plasmo のシステム要件として Node.js が 16.14 以降であることが挙げられていた。&lt;/p>
+&lt;blockquote>
+&lt;p>Node.js 16.14.x or later&lt;br>
+引用: &lt;a class="link" href="https://docs.plasmo.com/framework#system-requirements" target="_blank" rel="noopener"
+>https://docs.plasmo.com/framework#system-requirements&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>ただ、 Node.js のリリースケジュールによると 16 系は今年（記事執筆時は 2023 年 6 月 4 日）の 9 月で End-of-life とのことだったので、今回は 18 系を使ってみることにした。&lt;/p>
+&lt;blockquote>
+&lt;p>Node.js のリリーススケジュール:&lt;br>
+&lt;a class="link" href="https://github.com/nodejs/Release#release-schedule" target="_blank" rel="noopener"
+>https://github.com/nodejs/Release#release-schedule&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>以上を踏まえて作成した &lt;code>docker-compose.yml&lt;/code> が下記の通り:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yml" data-lang="yml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">version&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;3&amp;#34;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">services&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">app&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">node:18.16.0&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">volumes&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="l">.:/usr/src/app&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">working_dir&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/usr/src/app&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">tty&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Plasmo プロジェクトの作成は &lt;code>docker compose run&lt;/code> コマンドを用いて下記で行える。なお、 Plasmo は pnpm コマンドの利用を推奨していたが、 Node.js のイメージにデフォルトで入っていなかったので今回はデフォルトで入っている npm コマンドで進めた。コマンド実行のためにコンテナが溜まっていかないよう &lt;code>--rm&lt;/code> オプションを付けている。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ docker compose run --rm app npm create plasmo
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>プロジェクト作成の際に色々訊かれたが、今回は拡張機能の名前を &lt;code>learn-plasmo&lt;/code> にした以外は既定値で回答した。&lt;/p>
+&lt;p>Development server の起動も同様に下記のコマンドで行える。プロジェクトディレクトリ（ &lt;code>learn-plasmo/&lt;/code> ）に移動する必要がある点に注意。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ docker compose run --rm app bash -c &amp;#34;cd learn-plasmo &amp;amp;&amp;amp; npm run dev&amp;#34;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>記事中に Storage API を利用するためにパッケージを追加インストールするくだりがあるが、それも下記コマンドで行える:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ docker compose run --rm app bash -c &amp;#34;cd learn-plasmo &amp;amp;&amp;amp; npm install @plasmohq/storage react-hook-form&amp;#34;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>他にも Messaging API を利用するためにも追加インストールのくだりがあったが、それも下記コマンドで行える:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ docker compose run --rm app bash -c &amp;#34;cd learn-plasmo &amp;amp;&amp;amp; npm install @plasmohq/messaging&amp;#34;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="つまづいた点メモ">つまづいた点メモ
+&lt;/h2>&lt;ul>
+&lt;li>「 &lt;a class="link" href="https://zenn.dev/nado1001/articles/plasmo-browser-extension#storage%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B" target="_blank" rel="noopener"
+>Storage を利用する&lt;/a> 」のところでなぜか入力値が保存されなくてつまづいたが、一度 Production build で動かした後 Development server に戻ってきたらちゃんと保存されるようになった。原因は不明…（要検証）&lt;/li>
+&lt;li>「 &lt;a class="link" href="https://zenn.dev/nado1001/articles/plasmo-browser-extension#new-tab-page" target="_blank" rel="noopener"
+>New Tab Page&lt;/a> 」のところは自分が Vivaldi ユーザだったせいでそもそもカスタマイズできなかった&lt;/li>
+&lt;li>ファイル変更時は「ホットリロードが走る → 拡張機能を再読み込み」の手順を踏むと反映される&lt;/li>
+&lt;/ul>
+&lt;h2 id="個人的な所感">個人的な所感
+&lt;/h2>&lt;p>デフォルトで下記の機能が付いてるのが良かった:&lt;/p>
+&lt;ul>
+&lt;li>dev/prod のビルド分け&lt;/li>
+&lt;li>ホットリロード&lt;/li>
+&lt;/ul>
+&lt;p>また、今回は試さなかったが下記の機能も良さそうだった:&lt;/p>
+&lt;ul>
+&lt;li>Chrome Web Store への自動デプロイ&lt;/li>
+&lt;li>Google Analytics と連携できるっぽい（→ &lt;a class="link" href="https://docs.plasmo.com/quickstarts/with-google-analytics" target="_blank" rel="noopener"
+>公式ドキュメント&lt;/a> ）&lt;/li>
+&lt;/ul>
+&lt;p>メンテナンスもこまめにされてそうなので、これから拡張機能作るときは Plasmo 使うようにしてみようかな…&lt;/p></description></item><item><title>いつも使ってるSlack向け絵文字ジェネレーターがどうやって絵文字を生成してるか調べてみたメモ</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/p/how-slack-emoji-generator-works/</link><pubDate>Sun, 07 May 2023 16:08:00 +0000</pubDate><guid>https://yamamoto-yuta.github.io/tmp-hugo-test/p/how-slack-emoji-generator-works/</guid><description>&lt;p>いつも使ってる Slack 向け絵文字ジェネレーター:&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://emoji-gen.ninja/" target="_blank" rel="noopener"
+>絵文字ジェネレーター - Slack 向け絵文字を無料で簡単生成&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>リポジトリを見てみるとバックエンドに Python を用いており、その中で &lt;a class="link" href="https://github.com/emoji-gen/emojilib" target="_blank" rel="noopener"
+>emojilib&lt;/a> という自作ライブラリを用いていることが分かった。&lt;/p>
+&lt;p>そこで emojilib のリポジトリを見てみると、 emojilib は &lt;a class="link" href="https://github.com/emoji-gen/libemoji" target="_blank" rel="noopener"
+>libemoji&lt;/a> という C/C++ 製の自作ライブラリの Python ラッパーということが分かった。&lt;/p>
+&lt;p>emojilib を動かせるようにした Dockerfile を下記に示す。 emojilib 自体は &lt;code>pip install&lt;/code> でインストールできるのだが、 libemoji を動かすため依存が &lt;a class="link" href="https://github.com/emoji-gen/libemoji#debian-10-buster" target="_blank" rel="noopener"
+>いくつかあった&lt;/a> ので別途 &lt;code>apt-get install&lt;/code> で入れている。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-Dockerfile" data-lang="Dockerfile">&lt;span class="line">&lt;span class="cl">&lt;span class="k">FROM&lt;/span>&lt;span class="s"> python:3.7&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">RUN&lt;/span> apt-get update &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> apt-get upgrade -y&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">RUN&lt;/span> apt-get install -y &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> git &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> cmake &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> g++ &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> libfontconfig1-dev &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> libx11-dev &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> libxcomposite-dev &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> libgl1-mesa-dev &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> libglu1-mesa-dev &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> freeglut3-dev&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">RUN&lt;/span> pip install --upgrade pip&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">RUN&lt;/span> pip install emojilib --extra-index-url https://repo.fury.io/emoji-gen/&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>API経由でSlackへカスタム絵文字を追加できないか調査したときのメモ</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/p/api-add-custom-emoji-to-slack/</link><pubDate>Sat, 06 May 2023 16:56:00 +0000</pubDate><guid>https://yamamoto-yuta.github.io/tmp-hugo-test/p/api-add-custom-emoji-to-slack/</guid><description>&lt;h2 id="やりたいこと">やりたいこと
+&lt;/h2>&lt;p>Slack API 経由で Slack へ絵文字を追加したい&lt;/p>
+&lt;h2 id="調べたこと">調べたこと
+&lt;/h2>&lt;h3 id="方針-1-slack-api-の-adminemojiadd-を利用する">方針 1: Slack API の admin.emoji.add を利用する
+&lt;/h3>&lt;p>公式で用意されている絵文字追加用 API。&lt;/p>
+&lt;blockquote>
+&lt;p>公式ドキュメント: &lt;a class="link" href="https://api.slack.com/methods/admin.emoji.add" target="_blank" rel="noopener"
+>https://api.slack.com/methods/admin.emoji.add&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>ただし、結局この API は使えなかった。理由はこの API を利用するには Slack App に &lt;code>admin.teams:write&lt;/code> という権限を付与する必要があったから。&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;code>admin.teams:write&lt;/code> についての公式ドキュメント: &lt;a class="link" href="https://api.slack.com/scopes/admin.teams:write" target="_blank" rel="noopener"
+>https://api.slack.com/scopes/admin.teams:write&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>これには次の問題があったので今回は方針を変更することにした:&lt;/p>
+&lt;ul>
+&lt;li>Admin API は個々のワークスペースではなく組織全体に影響を与えることができ、ただ絵文字を追加するだけの用途で付与するには不適当なため&lt;/li>
+&lt;li>そもそも Enterprise 版でないと利用できないため&lt;/li>
+&lt;/ul>
+&lt;h3 id="方針-2-一般公開されていない-api-apiemojiadd-を利用する">方針 2: 一般公開されていない API /api/emoji.add を利用する
+&lt;/h3>&lt;p>どうやら Slack には一般公開されていない API がいくつかあるらしく、その中の一つである &lt;code>/api/emoji.add&lt;/code> を利用すれば絵文字の追加が可能らしい:&lt;/p>
+&lt;blockquote>
+&lt;p>参考: &lt;a class="link" href="https://github.com/slackhq/slack-api-docs/issues/28#issuecomment-424195796" target="_blank" rel="noopener"
+>https://github.com/slackhq/slack-api-docs/issues/28#issuecomment-424195796&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>この API を利用しているプロダクトがいくつかあるようだったので、それらを参考に API を叩いてみた。 API を叩く手順は次の通り。&lt;/p>
+&lt;h4 id="apiemojiadd-api-を叩く手順">/api/emoji.add API を叩く手順
+&lt;/h4>&lt;h5 id="1-トークンを入手する">1. トークンを入手する
+&lt;/h5>&lt;ol>
+&lt;li>絵文字を追加したいワークスペースを開く&lt;/li>
+&lt;li>開発者ツールを開き、コンソールタブで次のコマンドを実行する&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">JSON&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">parse&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">localStorage&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">localConfig_v2&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">teams&lt;/span>&lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">document&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">location&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">pathname&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">match&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sr">/^\/client\/(T[A-Z0-9]+)/&lt;/span>&lt;span class="p">)[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">].&lt;/span>&lt;span class="nx">token&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>引用: &lt;a class="link" href="https://github.com/jackellenberger/emojme/blob/master/README.md#cookie-token-one-liner" target="_blank" rel="noopener"
+>https://github.com/jackellenberger/emojme/blob/master/README.md#cookie-token-one-liner&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;code>xoxc-xxxxxxxxxx&lt;/code> といった形式のトークンが返ってくるはず。&lt;/p>
+&lt;h5 id="2-cookie-を入手する">2. Cookie を入手する
+&lt;/h5>&lt;ol>
+&lt;li>&lt;code>https://&amp;lt;TEAM_ID&amp;gt;.slack.com/customize/emoji&lt;/code> を開く（ワークスペースを開いた状態で「以下をカスタマイズ」をクリックすると飛べる）&lt;/li>
+&lt;li>開発者ツールを開き、「ネットワーク」タブを開く&lt;/li>
+&lt;li>&lt;code>emoji&lt;/code> というドキュメントを選択する&lt;/li>
+&lt;li>リクエストヘッダーの &lt;code>cookie:&lt;/code> の値が入手したい Cookie （この値をコピーするとき、「右クリック &amp;gt; 『値をコピー』」だとコピー後の文字列に日本語が混じって後で困るので、範囲選択でコピーする必要がある）&lt;/li>
+&lt;/ol>
+&lt;h5 id="3-api-を叩く">3. API を叩く
+&lt;/h5>&lt;p>API を叩くコード:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">requests&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">TOKEN&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;xoxc-xxxxxxxxxx&amp;#34;&lt;/span> &lt;span class="c1"># トークン&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">COOKIE&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;xxxxxxxxxx&amp;#34;&lt;/span> &lt;span class="c1"># Cookie&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">team_name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;xxxxxxxxxx&amp;#34;&lt;/span> &lt;span class="c1"># ワークスペースのチーム名&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">emoji_name&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;emoji&amp;#34;&lt;/span> &lt;span class="c1"># 絵文字の名前&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">emoji_img_filepath&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;./emoji.png&amp;#34;&lt;/span> &lt;span class="c1"># 絵文字の画像ファイルへのパス&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">URL_ADD&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;https://&lt;/span>&lt;span class="si">{team_name}&lt;/span>&lt;span class="s2">.slack.com/api/emoji.add&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">r&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">requests&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">post&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">URL_ADD&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">format&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">team_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">team_name&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">headers&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s1">&amp;#39;Cookie&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">COOKIE&lt;/span>&lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">data&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;mode&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;data&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;name&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">emoji_name&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;token&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">TOKEN&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">files&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="s1">&amp;#39;image&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">emoji_img_filepath&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;rb&amp;#39;&lt;/span>&lt;span class="p">)}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>次のレスポンスが返ってきていれば成功:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">{&amp;#34;ok&amp;#34;:true}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="残る課題">残る課題
+&lt;/h2>&lt;ul>
+&lt;li>トークンと Cookie の入手を自動でできないか？&lt;/li>
+&lt;/ul>
+&lt;h2 id="余談">余談
+&lt;/h2>&lt;h3 id="apiemojiadd-の-xoxb-トークンでの利用について">&lt;code>/api/emoji.add&lt;/code> の xoxb トークンでの利用について
+&lt;/h3>&lt;p>&lt;code>/api/emoji.add&lt;/code> を xoxb トークンで利用できるよう求める Issue が 2019 年 1 月に建てられているが、2023 年 5 月現在、まだ Open なままである。&lt;/p>
+&lt;blockquote>
+&lt;p>該当 Issue: &lt;a class="link" href="https://github.com/slackhq/slack-api-docs/issues/95" target="_blank" rel="noopener"
+>https://github.com/slackhq/slack-api-docs/issues/95&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="xoxc-トークンをスクレイピングで入手する">xoxc トークンをスクレイピングで入手する
+&lt;/h3>&lt;p>&lt;code>https://&amp;lt;TEAM_ID&amp;gt;.slack.com/customize/emoji&lt;/code> ページをスクレイピングすることで xoxc トークンを入手している例を紹介している &lt;a class="link" href="https://codenote.net/tool/4487.html" target="_blank" rel="noopener"
+>記事&lt;/a> を見つけた。&lt;/p>
+&lt;blockquote>
+&lt;p>該当コード: &lt;a class="link" href="https://github.com/smashwilson/slack-emojinator/blob/fbcf759ebbda8bd37b77c91362edde9fd3e0c05a/upload.py#L81-L94" target="_blank" rel="noopener"
+>https://github.com/smashwilson/slack-emojinator/blob/fbcf759ebbda8bd37b77c91362edde9fd3e0c05a/upload.py#L81-L94&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>しかし、やってみたがうまくいかなかった（ &lt;code>api_token:&lt;/code> の値が &lt;code>&amp;quot;&amp;quot;&lt;/code> だった）。やってみた当時はまだトークンや Cookie の入手などが手探りの状態だったので、それが原因でうまくいかなかったのかも…？&lt;/p>
+&lt;h2 id="参考">参考
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://hirotoohira.link/how-to-add-slack-emoji-on-api/" target="_blank" rel="noopener"
+>Slack で絵文字を追加するサービスを作ろうとしたときに調べたこと&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://codenote.net/tool/4487.html" target="_blank" rel="noopener"
+>Slack Custom Emoji を追加する非公開 API /api/emoji.add | CodeNote&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/smashwilson/slack-emojinator" target="_blank" rel="noopener"
+>smashwilson/slack-emojinator: Bulk upload emoji into Slack&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/Fauntleroy/neutral-face-emoji-tools" target="_blank" rel="noopener"
+>Fauntleroy/neutral-face-emoji-tools: Utilities that make life as a Slack emoji addict a little easier.&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/jackellenberger/emojme/tree/master" target="_blank" rel="noopener"
+>jackellenberger/emojme: very powerful very stupid Slack emoji tools, holy cow!&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>Archives</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/archives/</link><pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate><guid>https://yamamoto-yuta.github.io/tmp-hugo-test/archives/</guid><description/></item><item><title>About</title><link>https://yamamoto-yuta.github.io/tmp-hugo-test/about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://yamamoto-yuta.github.io/tmp-hugo-test/about/</guid><description>&lt;h2 id="careereducation">Career/Education
 &lt;/h2>&lt;ul>
 &lt;li>株式会社ヤプリ（2023.04 - )&lt;/li>
 &lt;li>長岡技術科学大学　情報・経営システム工学専攻（2021.04 - 2023.03）&lt;/li>
